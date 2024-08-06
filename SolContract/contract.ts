@@ -1,18 +1,20 @@
-import { Connection, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
+import { NextPage } from "next";
+import { FC, ReactNode } from "react";
+import {
+  ConnectionProvider,
+  WalletProvider,
+} from "@solana/wallet-adapter-react";
+import * as web3 from "@solana/web3.js";
  
-const suppliedPublicKey = process.argv[2];
-if (!suppliedPublicKey) {
-  throw new Error("Provide a public key to check the balance of!");
-}
+export const Home: NextPage = props => {
+  const endpoint = web3.clusterApiUrl("devnet");
+  const wallets = useMemo(() => [], []);
  
-const connection = new Connection("https://api.devnet.solana.com", "confirmed");
- 
-const publicKey = new PublicKey(suppliedPublicKey);
- 
-const balanceInLamports = await connection.getBalance(publicKey);
- 
-const balanceInSOL = balanceInLamports / LAMPORTS_PER_SOL;
- 
-console.log(
-  `✅ Finished! The balance for the wallet at address ${publicKey} is ${balanceInSOL}!`,
-);
+  return (
+    <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets}>
+        <p>Put the rest of your app here</p>
+      </WalletProvider>
+    </ConnectionProvider>
+  );
+};
